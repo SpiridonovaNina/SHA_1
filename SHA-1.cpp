@@ -3,6 +3,8 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <string.h>
+
 using namespace std;
 bool getFileContent(char* fileName, vector<unsigned char> &fileContent);
 void alignment(vector<unsigned char> &fileContent);
@@ -21,7 +23,7 @@ int main(int argc, char* argv[])
 		cerr << "Can't open input file: " << endl;
 		return -1;
 	}
-	cout << getHash(inputContent);
+	cout << getHash(inputContent) << endl;
 	return 0;
 }
 
@@ -84,7 +86,7 @@ unsigned long cir_shift(unsigned long val, int bits)
 const char* getHash(vector<unsigned char> &fileContent)
 {
 	alignment(fileContent);
-	//Инициализация переменных
+	//РРЅРёС†РёР°Р»РёР·Р°С†РёСЏ РїРµСЂРµРјРµРЅРЅС‹С…
 	unsigned long* buf = new unsigned long[5];
 	buf[0] = 0x67452301;
 	buf[1] = 0xEFCDAB89;
@@ -92,11 +94,11 @@ const char* getHash(vector<unsigned char> &fileContent)
 	buf[3] = 0x10325476;
 	buf[4] = 0xC3D2E1F0;
 
-	for (int j = 0; j < fileContent.size() / (16 * 4); j++)//номер блока
+	for (int j = 0; j < fileContent.size() / (16 * 4); j++)//РЅРѕРјРµСЂ Р±Р»РѕРєР°
 	{
 		vector<unsigned long> w;
 		w.resize(80);
-		for (int i = 0; i < 16; i++)//номер элемента в блоке
+		for (int i = 0; i < 16; i++)//РЅРѕРјРµСЂ СЌР»РµРјРµРЅС‚Р° РІ Р±Р»РѕРєРµ
 		{
 			unsigned long mi = 0;
 			for (int k = 0; k < 4; k++)
@@ -108,7 +110,7 @@ const char* getHash(vector<unsigned char> &fileContent)
 
 		for (int i = 16; i < 80; i++)
 		{
-			//w[i] = (w[i-3] xor w[i-8] xor w[i-14] xor w[i-16]) циклический сдвиг влево 1
+			//w[i] = (w[i-3] xor w[i-8] xor w[i-14] xor w[i-16]) С†РёРєР»РёС‡РµСЃРєРёР№ СЃРґРІРёРі РІР»РµРІРѕ 1
 			w[i] = cir_shift(w[i-3] ^ w[i-8] ^ w[i-14] ^ w[i-16], 1); 
 		}
 
@@ -152,16 +154,16 @@ const char* getHash(vector<unsigned char> &fileContent)
 			b = a;
 			a = temp;
 		}
-		//Добавляем хеш-значение этой части к результату:
+		//Р”РѕР±Р°РІР»СЏРµРј С…РµС€-Р·РЅР°С‡РµРЅРёРµ СЌС‚РѕР№ С‡Р°СЃС‚Рё Рє СЂРµР·СѓР»СЊС‚Р°С‚Сѓ:
 		buf[0] = buf[0] + a;
 		buf[1] = buf[1] + b; 
 		buf[2] = buf[2] + c;
 		buf[3] = buf[3] + d;
 		buf[4] = buf[4] + e;
 	}
-	//Итоговое хеш-значение:
+	//РС‚РѕРіРѕРІРѕРµ С…РµС€-Р·РЅР°С‡РµРЅРёРµ:
 	ostringstream res;
-	res.fill ('0'); //нулями будут «залиты» пустые позиции в результирующей строке
+	res.fill ('0'); //РЅСѓР»СЏРјРё Р±СѓРґСѓС‚ В«Р·Р°Р»РёС‚С‹В» РїСѓСЃС‚С‹Рµ РїРѕР·РёС†РёРё РІ СЂРµР·СѓР»СЊС‚РёСЂСѓСЋС‰РµР№ СЃС‚СЂРѕРєРµ
 	for (int i = 0; i < 5; i++)
 	{
 		res << std::hex << setw(8) << buf[i] << " ";
